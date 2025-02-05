@@ -1,11 +1,9 @@
 {
     "compilerOptions": {
         "allowJs": true,
-        "types": [
-            "@jxa/global-type"
-        ]
+        "types": ["@jxa/types", "node"],
     },
     "include": [
-        "**/*.js"
+        "*.ts",
     ]
 }
