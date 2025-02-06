@@ -42,7 +42,7 @@ var path = require("path");
 var os = require("os");
 var child_process_1 = require("child_process");
 var sync_1 = require("csv-parse/sync");
-function getUsername() {
+function getUsername(site_type, location_word, search_word, search_type, site_id, location) {
     return __awaiter(this, void 0, void 0, function () {
         var filePath, fileContent, latitude, longitude;
         return __generator(this, function (_a) {
@@ -54,8 +54,8 @@ function getUsername() {
                         process.exit(1); // エラー終了
                     }
                     fileContent = fs.readFileSync(filePath, 'utf-8');
-                    latitude = 34.57036336288414;
-                    longitude = 136.49725383201599;
+                    latitude = location.split(':')[0];
+                    longitude = location.split(':')[1];
                     console.log(fileContent);
                     // <?xml version="1.0"?>
                     // <gpx version="1.1" creator="gpxgenerator.com">
@@ -89,7 +89,7 @@ function getUsername() {
                             });
                         }, 1000);
                     });
-                    return [4 /*yield*/, (0, run_1.run)(function () {
+                    return [4 /*yield*/, (0, run_1.run)(function (site_type, location_word, search_word, search_type, site_id, location) {
                             var clickAllowButton = function (safariProc) {
                                 var frontWin = safariProc.windows[0];
                                 // シート(AXSheet)のボタン一覧から「許可」を探す
@@ -125,6 +125,10 @@ function getUsername() {
                                 globalThis.delay(2);
                             };
                             var safariSearch = function () {
+                                var search_sites = [
+                                    "https://www.google.co.jp",
+                                    "https://www.google.com",
+                                ];
                                 var safari = globalThis.Application("Safari");
                                 safari.activate();
                                 globalThis.delay(0.5);
@@ -148,7 +152,12 @@ function getUsername() {
                                 globalThis.delay(0.5);
                                 safari.documents[0].url = "https://yasu-home.com?random=true";
                                 globalThis.delay(2);
-                                safari.documents[0].url = "https://www.google.co.jp";
+                                if (site_type == 1) {
+                                    safari.documents[0].url = search_sites[0];
+                                }
+                                else {
+                                    safari.documents[0].url = search_sites[1];
+                                }
                                 console.log("=== 完了 ===");
                                 var tab = safari.windows[0].currentTab();
                                 globalThis.delay(3);
@@ -183,7 +192,7 @@ function getUsername() {
                                     var xcodeProc = systemEvents.processes.byName("Xcode");
                                     // 3. 「ファイル」メニューをクリックして開く
                                     xcodeProc.menuBars[0].menuBarItems.byName("Debug").click();
-                                    globalThis.delay(0.5); // 少し待たないとメニューが開ききる前に要素取得が走ってしまう
+                                    globalThis.delay(1); // 少し待たないとメニューが開ききる前に要素取得が走ってしまう
                                     // 4. 「ファイル」メニューのサブメニュー項目を全て取得
                                     var fileMenu = xcodeProc.menuBars[0].menuBarItems.byName("Debug").menus[0];
                                     var menuItems = fileMenu.menuItems();
@@ -217,6 +226,34 @@ function getUsername() {
     });
 }
 var data = fs.readFileSync('search.csv', { encoding: 'utf8' });
-var records = (0, sync_1.parse)(data);
-console.log(records.length);
-// getUsername().then(console.log);
+// header: true
+var records = (0, sync_1.parse)(data, {
+    columns: false,
+    skip_empty_lines: true
+});
+(function () { return __awaiter(void 0, void 0, void 0, function () {
+    var _i, records_1, record, site_type, location_word, search_word, search_type, site_id, location_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _i = 0, records_1 = records;
+                _a.label = 1;
+            case 1:
+                if (!(_i < records_1.length)) return [3 /*break*/, 4];
+                record = records_1[_i];
+                site_type = record[0], location_word = record[1], search_word = record[2], search_type = record[3], site_id = record[4], location_1 = record[5];
+                if (site_type === 'site_type') {
+                    return [3 /*break*/, 3];
+                }
+                return [4 /*yield*/, getUsername(Number(site_type), location_word, search_word, search_type, site_id, location_1).then(console.log)];
+            case 2:
+                _a.sent();
+                console.log("Finished: ".concat(search_word, " at ").concat(location_1));
+                _a.label = 3;
+            case 3:
+                _i++;
+                return [3 /*break*/, 1];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); })();

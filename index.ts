@@ -4,8 +4,20 @@ import * as path from 'path';
 import * as os from 'os';
 import { exec } from 'child_process';
 import { parse } from 'csv-parse/sync';
+import { config } from './config';
 
-async function getUsername() {
+
+
+async function getUsername(
+    site_type: number,
+    location_word: string,
+    search_word: string,
+    search_type: string,
+    site_id: string,
+    location: string
+) {
+
+
     // fileを書き換える
     // ~/Desktop/gpxgenerator_path.gpx
     const filePath = path.join(os.homedir(), 'Desktop', 'gpxgenerator_path.gpx');
@@ -14,8 +26,8 @@ async function getUsername() {
         process.exit(1); // エラー終了
     }
     const fileContent = fs.readFileSync(filePath, 'utf-8');
-    const latitude = 34.57036336288414;
-    const longitude = 136.49725383201599;
+    const latitude = location.split(':')[0]; 
+    const longitude = location.split(':')[1];
     console.log(fileContent);
     // <?xml version="1.0"?>
     // <gpx version="1.1" creator="gpxgenerator.com">
@@ -63,7 +75,15 @@ async function getUsername() {
     
 
 
-    return await run(() => {
+    return await run((
+        site_type: number,
+        location_word: string,
+        search_word: string,
+        search_type: string,
+        site_id: string,
+        location: string
+
+    ) => {
         const clickAllowButton = (safariProc) => {
             let frontWin = safariProc.windows[0];
 
@@ -149,6 +169,10 @@ async function getUsername() {
             globalThis.delay(2);                
         }
         const safariSearch = () => {
+            const search_sites = [
+                "https://www.google.co.jp",
+                "https://www.google.com",
+            ];
             const safari = globalThis.Application("Safari");
             safari.activate();
             globalThis.delay(0.5);
@@ -183,56 +207,69 @@ async function getUsername() {
             safari.documents[0].url = "https://yasu-home.com?random=true";
 
 
-            globalThis.delay(2);
 
-            safari.documents[0].url = "https://www.google.co.jp";
 
             console.log("=== 完了 ===");
             let tab = safari.windows[0].currentTab();
             globalThis.delay(3);
 
+            if (location_word != "") {
+                if(site_type == 1) {
+                    safari.documents[0].url = search_sites[0];
+                }else {
+                    safari.documents[0].url = search_sites[1];
+                }
 
-            console.log("天気を検索");
+                console.log("天気を検索");
+                safari.doJavaScript(`
+                document.querySelector("textarea.gLFyf").value = "${location_word}";
+                document.querySelector("textarea.gLFyf").form.submit();
+                `, {in: tab});
+
+                globalThis.delay(5);
+
+                
+                console.log("clickAllowButton");
+                clickAllowButton(safariProc);
+                
+
+                // 正確な現在地を使用をクリック
+                safari.doJavaScript(`
+                document.querySelector("span.HzHK1").click();
+                `, {in: tab});
+
+                globalThis.delay(10);
+
+                //許可が出ればおす
+                clickAllowButton(safariProc);
+                
+
+                safari.doJavaScript(`
+                document.querySelector("div.VtPCGb").click();
+                `, {in: tab});
+
+                globalThis.delay(2);
+
+                if(site_type == 1) {
+                    safari.documents[0].url = search_sites[0];
+                }else{
+                    safari.documents[0].url = search_sites[1];
+                }
+
+                globalThis.delay(2);
+            }else{
+                if(site_type == 1) {
+                    safari.documents[0].url = search_sites[0];
+                }else{
+                    safari.documents[0].url = search_sites[1];
+                }
+                globalThis.delay(2);
+            }
+
+
+
             safari.doJavaScript(`
-            document.querySelector("textarea.gLFyf").value = "天気";
-            document.querySelector("textarea.gLFyf").form.submit();
-            `, {in: tab});
-
-            globalThis.delay(5);
-
-            
-            console.log("clickAllowButton");
-            clickAllowButton(safariProc);
-            
-
-            // 正確な現在地を使用をクリック
-            safari.doJavaScript(`
-            document.querySelector("span.HzHK1").click();
-            `, {in: tab});
-
-            globalThis.delay(10);
-
-            //許可が出ればおす
-            clickAllowButton(safariProc);
-            
-
-            safari.doJavaScript(`
-            document.querySelector("div.VtPCGb").click();
-            `, {in: tab});
-
-            globalThis.delay(10);
-
-
-
-            safari.doJavaScript(`
-            document.querySelector("a[id='logo']").click();
-            `, {in: tab});
-
-            globalThis.delay(2);
-
-
-            safari.doJavaScript(`
-            document.querySelector("textarea.gLFyf").value = "美味しい　とうもろこし";
+            document.querySelector("textarea.gLFyf").value = "${search_word}";
             document.querySelector("textarea.gLFyf").form.submit();
             `, {in: tab});
 
@@ -261,7 +298,7 @@ async function getUsername() {
                 const xcodeProc   = systemEvents.processes.byName("Xcode");
                 // 3. 「ファイル」メニューをクリックして開く
                 xcodeProc.menuBars[0].menuBarItems.byName("Debug").click();
-                globalThis.delay(0.5); // 少し待たないとメニューが開ききる前に要素取得が走ってしまう
+                globalThis.delay(1); // 少し待たないとメニューが開ききる前に要素取得が走ってしまう
 
                 // 4. 「ファイル」メニューのサブメニュー項目を全て取得
                 let fileMenu = xcodeProc.menuBars[0].menuBarItems.byName("Debug").menus[0];
@@ -301,8 +338,32 @@ async function getUsername() {
 }
 
 const data = fs.readFileSync('search.csv', { encoding : 'utf8' });
-const records = parse(data);
-console.log(records.length);
+// header: true
+const records = parse(data, {
+    columns: false,
+    skip_empty_lines: true
+});
+(async () => {
+    for (const record of records) {
+        const [site_type, location_word, search_word, search_type, site_id, location] = record;
+        if (site_type === 'site_type') {
+            continue;
+        }
+
+        await getUsername(
+            Number(site_type),
+            location_word,
+            search_word,
+            search_type,
+            site_id,
+            location
+        ).then(console.log);
+
+        console.log(`Finished: ${search_word} at ${location}`);
+
+    }
+})();
 
 
-// getUsername().then(console.log);
+
+
