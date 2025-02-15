@@ -1,44 +1,14 @@
-# Editor integrate example repository
+・Googlecom、Google.co.jp選択できる形→A列で制御
+・位置情報設定なしの場合は天気検索なし→B列で制御（判断基準：B列空白なら位置情報検索行わずTOPからC列ワード検索）
+・位置情報ワードの変更→B列で制御（現在天気だが、B列のワードで検索し位置設定を行う）
+・ランダムクリック（検索結果よりサイト1番目～10番目click）→D列で制御（判断基準：random時、random1なら1番目click）
+・指定ワード部分一致でクリック→D列で制御（判断基準：random以外なら検索結果より部分一致で判断クリックする）※添付画像箇所も含まれる
+・J2検索（天気検索の後TOPに戻らずそのまま検索）→E列で制御（判断基準：J1ならTOP戻って検索、J2ならそのまま検索）
 
-## Usage
+・UA変更（指定SPUA）→検索リスト以外のconfigファイルのようなもので制御（trueなら検索都度同一階層内のファイルからrandomでUA設定）
+sampleの検索リスト（CSVファイル）を添付いたします。
 
-You can try to open this repository with [Visual Studio Code](https://code.visualstudio.com/ "Visual Studio Code - Code Editing. Redefined")
+最後のUA変更以外は工数かからない予想でいますが、
+UA変更時は要素が変化するため時間がかかるのではと考えております。
 
-    git clone https://github.com/JXA-userland/editor-integrate-example
-    cd editor-integrate-example
-    npm install
-    vscode .
-
-**limitation**
-
-Some obejct type is `any`.
-It means that auto-complete work specific object like `Application("System Events")`.
-
-For more details, see [@jxa/types](https://github.com/JXA-userland/JXA/tree/master/packages/@jxa/types) and [@jxa/sdef-to-dts](https://github.com/JXA-userland/JXA/tree/master/packages/@jxa/sdef-to-dts).
-
-### Run code
-
-    osascript -l JavaScript ./example-jxa.js
-
-## Setup steps manually
-
-1. Create `package.json`
-  - `$ npm init --yes` 
-2. Install `@jxa/global-type`
-  - `$ npm install -D @jxa/global-type`
-3. Adding [`tsconfig.json`](http://www.typescriptlang.org/docs/handbook/tsconfig-json.html) file with the following configuration should get intelligent code completion working.
-
-**tsconfig.json:**
-```json5
-{
-  "compilerOptions": {
-    "allowJs": true,
-    "types": [
-      "@jxa/global-type"
-    ]
-  },
-  "include": [
-    "**/*.js" // <= this scope is integrated with @jxa/global-type
-  ]
-}
-```
+こちら可能でしょうか？
