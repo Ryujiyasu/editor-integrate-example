@@ -144,9 +144,11 @@ async function getUsername(
                     let counter = 0;
                     for (let i = 0; i < elements.length; i++) {
                         let a = elements[i].querySelectorAll("a");
-                        console.log("a: " + a);
+                        console.log("a.length: " + a.length);
                         for (let j = 0; j < a.length; j++) {
-                            if (a[j].href == null) {
+                            console.log("a[j].href: " + a[j].href);
+                            console.log("a[j]");
+                            if (a[j].href == null || a[j].href == "") {
                                 continue;
                             }
                             console.log("a[j].href: " + a[j].href);
@@ -157,10 +159,12 @@ async function getUsername(
                             if(url.includes("youtube") || url.includes("twitter") || url.includes("instagram") || url.includes("facebook")) {
                                 continue;
                             }
-                            if(url.includes("google") || url.includes("apple")) {
+                            if(url.includes("apple")) {
                                 continue;
                             }
                             counter++;
+                            console.log("counter: " + counter);
+                            console.log("search_type_num: " + ${search_type_num});
                             if(counter == ${search_type_num}) {
                                 a[j].click();
                                 finish = true;
@@ -210,9 +214,9 @@ async function getUsername(
                 });
             `, {in: safari.windows[0].currentTab()});
             globalThis.delay(2);
-            // safari.doJavaScript(`
-            //     history.back();
-            // `, {in: safari.windows[0].currentTab()});
+            safari.doJavaScript(`
+                history.back();
+            `, {in: safari.windows[0].currentTab()});
 
             globalThis.delay(2);                
         }
@@ -307,6 +311,11 @@ async function getUsername(
                 document.querySelector("textarea.gLFyf").form.submit();
                 `, {in: tab});
 
+                safari.doJavaScript(`
+                document.querySelector("input[name='q']").value = "${location_word}";
+                document.querySelector("input[name='q']").form.submit();
+                `, {in: tab});
+
                 globalThis.delay(5);
 
                 
@@ -361,14 +370,22 @@ async function getUsername(
                 globalThis.delay(2);
             }
 
-
-
             safari.doJavaScript(`
             if(document.querySelector("textarea.gLFyf") == null) {
                 window.location.href = "${search_sites[site_type - 1]}";
             }
+            `, {in: tab});
+
+            globalThis.delay(2);
+            
+            safari.doJavaScript(`
             document.querySelector("textarea.gLFyf").value = "${search_word}";
             document.querySelector("textarea.gLFyf").form.submit();
+            `, {in: tab});
+
+            safari.doJavaScript(`
+            document.querySelector("input[name='q']").value = "${location_word}";
+            document.querySelector("input[name='q']").form.submit();
             `, {in: tab});
 
 
@@ -384,7 +401,7 @@ async function getUsername(
             searchUrlClick(safari);
 
             // safari 閉じる
-            // safari.quit();
+            safari.quit();
         }
         const locationChange = () => {
 
@@ -408,10 +425,6 @@ async function getUsername(
 
                 const subMenu = menuItems.at(22).menus[0].menuItems();
 
-                subMenu.forEach((item, index) => {
-                    console.log("item: " + item.name());
-                    console.log("index: " + index);
-                });
                 if(i == 0) {
                     subMenu.at(0).click();
                 }else{
