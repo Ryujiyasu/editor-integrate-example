@@ -384,7 +384,7 @@ async function getUsername(
             `, {in: tab});
 
             safari.doJavaScript(`
-            document.querySelector("input[name='q']").value = "${location_word}";
+            document.querySelector("input[name='q']").value = "${search_word}";
             document.querySelector("input[name='q']").form.submit();
             `, {in: tab});
 
