@@ -14,10 +14,12 @@ async function getUsername(
     search_word: string,
     search_type: string,
     site_id: string,
-    location: string
+    location: string,
+    userAgent: string,
+    change_random_ua: boolean
 ) {
 
-
+    console.log(`userAgent: ${userAgent}`);
     // fileを書き換える
     // ~/Desktop/gpxgenerator_path.gpx
     const filePath = path.join(os.homedir(), 'Desktop', 'gpxgenerator_path.gpx');
@@ -86,7 +88,9 @@ async function getUsername(
         search_word: string,
         search_type: string,
         site_id: string,
-        location: string
+        location: string,
+        userAgent: string,
+        change_random_ua: boolean
 
     ) => {
 
@@ -169,6 +173,26 @@ async function getUsername(
                         }
                     }
                 `, {in: safari.windows[0].currentTab()});
+            }else{
+                const search_check_word = search_type;
+                console.log("search_check_word: " + search_check_word);
+                safari.doJavaScript(`
+                    let a = document.querySelectorAll("a");
+                    for (let j = 0; j < a.length; j++) {
+                        if (a[j].href == null) {
+                            continue;
+                        }
+                        console.log(a[j].textContent);
+                        if(a[j].textContent.includes("${search_check_word}") == false) {
+                            continue;
+                        }
+                        a[j].click();
+                        break;                        
+                    }
+
+                `, {in: safari.windows[0].currentTab()});
+
+
             }
             
             globalThis.delay(2);
@@ -186,9 +210,9 @@ async function getUsername(
                 });
             `, {in: safari.windows[0].currentTab()});
             globalThis.delay(2);
-            safari.doJavaScript(`
-                history.back();
-            `, {in: safari.windows[0].currentTab()});
+            // safari.doJavaScript(`
+            //     history.back();
+            // `, {in: safari.windows[0].currentTab()});
 
             globalThis.delay(2);                
         }
@@ -236,30 +260,32 @@ async function getUsername(
             safariProc.menuBars[0].menuBarItems.byName("開発").click();
             globalThis.delay(0.5); // 少し待たないとメニューが開ききる前に要素取得が走ってしまう
 
-            // 4. 「ファイル」メニューのサブメニュー項目を全て取得
-            let kaihatsuMenu = safariProc.menuBars[0].menuBarItems.byName("開発").menus[0];
-            let kaihatsuMenuItems = kaihatsuMenu.menuItems();
-
-            // 5. コンソールログに各メニュー項目の名前を出力
-            console.log("=== 'ユーザーエージェント ===");
-
-            kaihatsuMenuItems.at(1).click();
-            const kaihatsuSubMenu = kaihatsuMenuItems.at(1).menus[0].menuItems();
-     
-            kaihatsuSubMenu.at(17).click();
-
-            globalThis.delay(2);
-            
-            // keyboard 全選択
-            systemEvents.keystroke("a", { using: "command down" });
-            // delete
-            systemEvents.keystroke("\u0008");
-            // input
-            systemEvents.keystroke("Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 YJApp-IOS jp.co.yahoo.ipn.appli/4.49.0");
-            // enter
-            systemEvents.keyCode(76);
-            globalThis.delay(2);
-
+            // UA設定
+            if(change_random_ua){
+                let kaihatsuMenu = safariProc.menuBars[0].menuBarItems.byName("開発").menus[0];
+                let kaihatsuMenuItems = kaihatsuMenu.menuItems();
+    
+                // 5. コンソールログに各メニュー項目の名前を出力
+                console.log("=== 'ユーザーエージェント ===");
+    
+                kaihatsuMenuItems.at(1).click();
+                const kaihatsuSubMenu = kaihatsuMenuItems.at(1).menus[0].menuItems();
+         
+                kaihatsuSubMenu.at(17).click();
+    
+                globalThis.delay(2);
+                
+                // keyboard 全選択
+                systemEvents.keystroke("a", { using: "command down" });
+                // delete
+                systemEvents.keystroke("\u0008");
+                // input
+                
+                systemEvents.keystroke(userAgent);
+                // enter
+                systemEvents.keyCode(76);
+                globalThis.delay(2);
+            }
             console.log("=== 完了 ===");
             let tab = safari.windows[0].currentTab();
             globalThis.delay(3);
@@ -338,6 +364,9 @@ async function getUsername(
 
 
             safari.doJavaScript(`
+            if(document.querySelector("textarea.gLFyf") == null) {
+                window.location.href = "${search_sites[site_type - 1]}";
+            }
             document.querySelector("textarea.gLFyf").value = "${search_word}";
             document.querySelector("textarea.gLFyf").form.submit();
             `, {in: tab});
@@ -355,7 +384,7 @@ async function getUsername(
             searchUrlClick(safari);
 
             // safari 閉じる
-            safari.quit();
+            // safari.quit();
         }
         const locationChange = () => {
 
@@ -375,13 +404,6 @@ async function getUsername(
                 let fileMenu = xcodeProc.menuBars[0].menuBarItems.byName("Debug").menus[0];
                 let menuItems = fileMenu.menuItems();
 
-                // 5. コンソールログに各メニュー項目の名前を出力
-                console.log("=== 'ファイル' メニューの項目一覧 ===");
-
-                menuItems.forEach((item, index) => {
-                    console.log("item: " + item.name());
-                    console.log("index: " + index);
-                });
                 menuItems.at(22).click();
 
                 const subMenu = menuItems.at(22).menus[0].menuItems();
@@ -405,7 +427,7 @@ async function getUsername(
 
         return "Done!";
 
-    }, site_type, location_word, search_word, search_type, site_id, location);
+    }, site_type, location_word, search_word, search_type, site_id, location, userAgent, change_random_ua);
 }
 
 const data = fs.readFileSync('search.csv', { encoding : 'utf8' });
@@ -420,14 +442,24 @@ const records = parse(data, {
         if (site_type === 'site_type') {
             continue;
         }
-
+        let userAgent = "";
+        if(config.change_random_ua){
+            const userAgentData = fs.readFileSync('userAgent.config', { encoding : 'utf8' });
+            const userAgentList = userAgentData.split('\n');
+            const random = Math.floor(Math.random() * userAgentList.length);
+            userAgent = userAgentList[random];
+        }
+        console.log("userAgent: " + userAgent);
+        console.log(`change_random_ua: ${config.change_random_ua}`);
         await getUsername(
             Number(site_type),
             location_word,
             search_word,
             search_type,
             site_id,
-            location
+            location,
+            userAgent,
+            config.change_random_ua
         ).then(console.log);
 
         console.log(`Finished: ${search_word} at ${location}`);
