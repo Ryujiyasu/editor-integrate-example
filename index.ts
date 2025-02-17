@@ -8,6 +8,7 @@ import { config } from './config';
 
 
 
+
 async function getUsername(
     site_type: number,
     location_word: string,
@@ -282,10 +283,19 @@ async function getUsername(
                 // keyboard 全選択
                 systemEvents.keystroke("a", { using: "command down" });
                 // delete
-                systemEvents.keystroke("\u0008");
+                systemEvents.keyCode(51);
                 // input
+
+                globalThis.delay(2);
+                // copy clipboard userAgent
+
+                // AppKitフレームワークをインポート
+                systemEvents.includeStandardAdditions = true;
+                systemEvents.setTheClipboardTo(userAgent);
+                globalThis.delay(2);
+
+                systemEvents.keystroke("v", { using: "command down" });
                 
-                systemEvents.keystroke(userAgent);
                 // enter
                 systemEvents.keyCode(76);
                 globalThis.delay(2);
@@ -461,6 +471,7 @@ const records = parse(data, {
             const userAgentList = userAgentData.split('\n');
             const random = Math.floor(Math.random() * userAgentList.length);
             userAgent = userAgentList[random];
+
         }
         console.log("userAgent: " + userAgent);
         console.log(`change_random_ua: ${config.change_random_ua}`);
