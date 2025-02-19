@@ -1,0 +1,20 @@
+[2025-02-19T23:02:03.599Z] userAgent: Mozilla/5.0 (iPhone; CPU iPhone OS 14_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) GSA/187.0.410885375 Mobile/15E148 Safari/604.1
+[2025-02-19T23:02:03.600Z] <?xml version="1.0"?>
+    <gpx version="1.1" creator="gpxgenerator.com">
+        <wpt lat="35.6617773" lon="139.7040506">
+            <ele>20.11</ele>
+            <time>2025-01-27T04:03:55Z</time>
+        </wpt>
+    </gpx>
+[2025-02-19T23:02:03.601Z] site_type: 1
+[2025-02-19T23:02:03.601Z] location_word: 天気
+[2025-02-19T23:02:03.602Z] search_word: 検索テスト1
+[2025-02-19T23:02:03.602Z] search_type: random
+[2025-02-19T23:02:03.602Z] site_id: J1
+[2025-02-19T23:02:03.602Z] location: 35.6617773:139.7040506
+[2025-02-19T23:02:03.947Z] Devices:
+
+[2025-02-19T23:02:05.013Z] Devices:
+
+[2025-02-19T23:02:58.063Z] JXA 実行結果: Done!
+[2025-02-19T23:02:58.063Z] Finished: 検索テスト1 at 35.6617773:139.7040506
