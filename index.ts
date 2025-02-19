@@ -278,10 +278,16 @@ async function getUsername(
                 globalThis.delay(0.5);
     
                 safari.documents[0].url = "https://yasu-home.com?random=true";
+                let tab = safari.windows[0].currentTab();
+                // id="ip" の要素を取得して、その値をコンソールログに出力
+                globalThis.delay(2);
+                const app = globalThis.Application.currentApplication();
+                app.includeStandardAdditions = true;
     
-    
-    
-    
+                // shell経由で ifconfig.me のサービスを叩いてIPを取得する
+                const ip = app.doShellScript("curl -s https://ifconfig.me");
+                globalThis.delay(2);
+                console.log("IP: " + ip);
                 safariProc.menuBars[0].menuBarItems.byName("開発").click();
                 globalThis.delay(0.5); // 少し待たないとメニューが開ききる前に要素取得が走ってしまう
     
@@ -321,7 +327,7 @@ async function getUsername(
                     globalThis.delay(2);
                 }
                 console.log("=== 完了 ===");
-                let tab = safari.windows[0].currentTab();
+                tab = safari.windows[0].currentTab();
                 globalThis.delay(3);
     
                 if (location_word != "") {
