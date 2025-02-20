@@ -288,11 +288,12 @@ async function getUsername(
                 const ip = app.doShellScript("curl -s https://ifconfig.me");
                 globalThis.delay(2);
                 console.log("IP: " + ip);
-                safariProc.menuBars[0].menuBarItems.byName("開発").click();
-                globalThis.delay(0.5); // 少し待たないとメニューが開ききる前に要素取得が走ってしまう
+
     
                 // UA設定
                 if(change_random_ua){
+                    safariProc.menuBars[0].menuBarItems.byName("開発").click();
+                    globalThis.delay(0.5); // 少し待たないとメニューが開ききる前に要素取得が走ってしまう
                     let kaihatsuMenu = safariProc.menuBars[0].menuBarItems.byName("開発").menus[0];
                     let kaihatsuMenuItems = kaihatsuMenu.menuItems();
         

@@ -18,3 +18,68 @@
 
 [2025-02-19T23:02:58.063Z] JXA 実行結果: Done!
 [2025-02-19T23:02:58.063Z] Finished: 検索テスト1 at 35.6617773:139.7040506
+[2025-02-20T00:39:05.389Z] userAgent: 
+[2025-02-20T00:39:05.391Z] <?xml version="1.0"?>
+    <gpx version="1.1" creator="gpxgenerator.com">
+        <wpt lat="35.6617773" lon="139.7040506">
+            <ele>20.11</ele>
+            <time>2025-01-27T04:03:55Z</time>
+        </wpt>
+    </gpx>
+[2025-02-20T00:39:05.394Z] site_type: 1
+[2025-02-20T00:39:05.395Z] location_word: 天気
+[2025-02-20T00:39:05.395Z] search_word: 検索テスト1
+[2025-02-20T00:39:05.395Z] search_type: random
+[2025-02-20T00:39:05.395Z] site_id: J1
+[2025-02-20T00:39:05.395Z] location: 35.6617773:139.7040506
+[2025-02-20T00:39:05.482Z] Devices:
+
+[2025-02-20T00:39:06.576Z] Devices:
+
+[2025-02-20T00:39:39.696Z] Error: Command failed: /usr/bin/osascript -l JavaScript
+=== 'ファイル' メニューの項目一覧 ===
+random: 55
+IP: 210.158.166.54
+=== 完了 ===
+site_type: 1
+execution error: Error: Error: 正しくないインデックスです。 (-1719)
+
+[2025-02-20T00:39:39.697Z] Finished: 検索テスト1 at 35.6617773:139.7040506
+[2025-02-20T00:39:46.986Z] userAgent: 
+[2025-02-20T00:39:46.987Z] <?xml version="1.0"?>
+    <gpx version="1.1" creator="gpxgenerator.com">
+        <wpt lat="35.6617773" lon="139.7040506">
+            <ele>20.11</ele>
+            <time>2025-01-27T04:03:55Z</time>
+        </wpt>
+    </gpx>
+[2025-02-20T00:39:46.989Z] site_type: 1
+[2025-02-20T00:39:46.990Z] location_word: 天気
+[2025-02-20T00:39:46.990Z] search_word: 検索テスト1
+[2025-02-20T00:39:46.990Z] search_type: random
+[2025-02-20T00:39:46.990Z] site_id: J1
+[2025-02-20T00:39:46.991Z] location: 35.6617773:139.7040506
+[2025-02-20T00:39:47.087Z] Devices:
+
+[2025-02-20T00:39:48.176Z] Devices:
+
+[2025-02-20T00:40:46.345Z] JXA 実行結果: Done!
+[2025-02-20T00:40:46.346Z] Finished: 検索テスト1 at 35.6617773:139.7040506
+[2025-02-20T00:41:35.874Z] userAgent: 
+[2025-02-20T00:41:35.875Z] <?xml version="1.0"?>
+    <gpx version="1.1" creator="gpxgenerator.com">
+        <wpt lat="35.6617773" lon="139.7040506">
+            <ele>20.11</ele>
+            <time>2025-01-27T04:03:55Z</time>
+        </wpt>
+    </gpx>
+[2025-02-20T00:41:35.879Z] site_type: 1
+[2025-02-20T00:41:35.879Z] location_word: 天気
+[2025-02-20T00:41:35.879Z] search_word: 検索テスト1
+[2025-02-20T00:41:35.879Z] search_type: random
+[2025-02-20T00:41:35.879Z] site_id: J1
+[2025-02-20T00:41:35.880Z] location: 35.6617773:139.7040506
+[2025-02-20T00:41:35.992Z] Devices:
+
+[2025-02-20T00:41:37.102Z] Devices:
+
