@@ -285,7 +285,7 @@ async function getUsername(
                 app.includeStandardAdditions = true;
     
                 // shell経由で ifconfig.me のサービスを叩いてIPを取得する
-                const ip = app.doShellScript("curl -s https://ifconfig.me");
+                const ip = app.doShellScript("curl -s https://yasu-home.com/wp-json/custom/v1/real-ip/");
                 globalThis.delay(2);
                 console.log("IP: " + ip);
 
@@ -439,6 +439,7 @@ async function getUsername(
     
                 // safari 閉じる
                 safari.quit();
+                return ip;
             }
             const locationChange = () => {
     
@@ -472,10 +473,10 @@ async function getUsername(
             }
             
             locationChange();
-            safariSearch();
+            const ip =safariSearch();
             
     
-            return "Done!";
+            return "Done! ip: " + ip;
     
         }, site_type, location_word, search_word, search_type, site_id, location, userAgent, change_random_ua);
         log(`JXA 実行結果: ${result}`);
